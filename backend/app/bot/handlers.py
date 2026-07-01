@@ -1,0 +1,45 @@
+from app.bot.keyboards import help_text
+from app.schemas.bot import BotResponse
+from app.services.bot_message import BotMessageService
+
+
+def handle_command(command: str, service: BotMessageService) -> BotResponse:
+    normalized = command.strip().lower()
+
+    if normalized == "/start":
+        return BotResponse(
+            message=(
+                "Welcome to ExpenseFlow. Send expenses like '450 coffee', 'Dinner 200 with Om', "
+                "or income like '+500 freelance'."
+            ),
+            command="start",
+        )
+
+    if normalized == "/help":
+        return BotResponse(message=help_text(), command="help")
+
+    if normalized == "/balance":
+        return service.build_balance_response()
+
+    if normalized == "/summary":
+        return service.build_summary_response()
+
+    if normalized == "/month":
+        return BotResponse(message="Monthly drill-down will be expanded in Phase 4 analytics.", command="month")
+
+    if normalized == "/report":
+        return BotResponse(message="Reports module is planned for later phases.", command="report")
+
+    if normalized == "/export":
+        return BotResponse(message="Export flows are planned for a later phase.", command="export")
+
+    if normalized == "/friends":
+        return BotResponse(message="Friends management UI/API will expand in upcoming phases.", command="friends")
+
+    if normalized == "/budgets":
+        return BotResponse(message="Budget management arrives in Phase 3.", command="budgets")
+
+    if normalized == "/settings":
+        return BotResponse(message="Telegram bot settings will expand in later phases.", command="settings")
+
+    return BotResponse(message="Unknown command. Use /help for supported commands.", command="unknown")

@@ -1,0 +1,18 @@
+CATEGORY_KEYWORDS: dict[str, list[str]] = {
+    "Food": ["coffee", "pizza", "dinner", "lunch", "breakfast", "snack", "tea"],
+    "Groceries": ["groceries", "vegetables", "milk", "supermarket"],
+    "Transport": ["cab", "taxi", "uber", "ola", "bus", "metro", "fuel"],
+    "Shopping": ["shopping", "clothes", "shoes", "amazon"],
+    "Entertainment": ["movie", "netflix", "game", "concert"],
+    "Bills": ["electricity", "water", "internet", "mobile", "wifi"],
+    "Rent": ["rent"],
+    "Healthcare": ["doctor", "hospital", "medicine", "pharmacy"],
+    "Education": ["course", "book", "tuition"],
+    "Travel": ["trip", "flight", "hotel"],
+    "Subscriptions": ["subscription", "spotify", "youtube premium"],
+    "Salary": ["salary", "paycheck"],
+    "Freelance": ["freelance", "client"],
+    "Investment": ["investment", "dividend", "mutual fund", "stock"],
+    "Gift": ["gift"],
+    "Refund": ["refund", "cashback"],
+}
