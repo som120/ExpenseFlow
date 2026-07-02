@@ -4,6 +4,7 @@
 
 - Telegram bot scaffolding with aiogram
 - Webhook route at `/api/v1/telegram/webhook`
+- Webhook route now accepts native Telegram `Update` payloads
 - Supported command handling for:
   - `/start`
   - `/help`
@@ -33,6 +34,7 @@
 
 - Parsing logic lives in `app/parser/` so it can later be replaced by an AI-powered parser without touching routers.
 - Webhook currently returns previews and command responses; authenticated user-to-Telegram identity linking is left for a later auth expansion.
+- Webhook also sends text replies back to Telegram chats when a bot token is configured.
 - Command handlers are lightweight and intentionally keep advanced reporting/budget flows as placeholders until later phases.
 
 ## Verification notes

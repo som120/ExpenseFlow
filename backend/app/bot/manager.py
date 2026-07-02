@@ -50,6 +50,16 @@ class TelegramBotManager:
         except Exception:
             logger.exception("Failed to configure Telegram commands")
 
+    async def send_text(self, chat_id: int, text: str) -> None:
+        bot = self.get_bot()
+        if not bot:
+            return
+
+        try:
+            await bot.send_message(chat_id=chat_id, text=text)
+        except Exception:
+            logger.exception("Failed to send Telegram message", extra={"chat_id": chat_id})
+
     async def shutdown(self) -> None:
         if self._bot is not None:
             await self._bot.session.close()
