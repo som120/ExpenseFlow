@@ -22,10 +22,22 @@ The backend now also includes:
 - Webhook endpoint for Telegram updates
 - Regex-based natural language parser for expense/income messages
 - Bot command handlers for `/start`, `/help`, `/balance`, `/summary`, `/month`, `/report`, `/export`, `/friends`, `/budgets`, `/settings`
+- Automatic Telegram-user creation and transaction persistence from text messages
+
+## Phase 3 status
+
+The repository now also includes:
+
+- Next.js frontend scaffold under `frontend/`
+- Authentication pages
+- Dashboard UI
+- Transactions, friends, and budgets pages
+- Backend friends and budgets APIs
 
 ## Structure
 
 - `backend/` – FastAPI app, migrations, and tests
+- `frontend/` – Next.js dashboard application
 - `docs/` – implementation notes by phase
 
 ## Environment

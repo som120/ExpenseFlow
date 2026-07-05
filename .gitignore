@@ -9,3 +9,7 @@ venv/
 dist/
 build/
 htmlcov/
+package-lock.json/
+node_modules/
+.env.local
+.next/

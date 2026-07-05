@@ -6,6 +6,7 @@ from decimal import Decimal
 from sqlalchemy.orm import Session
 
 from app.models.transaction import TransactionType
+from app.models.user import User
 from app.parser.schemas import ParsedTransaction
 from app.parser.service import TransactionMessageParser
 from app.schemas.bot import BotResponse
@@ -29,6 +30,17 @@ class BotTransactionService:
 
         return BotResponse(
             message=self._build_preview(parsed),
+            parsed=parsed.model_dump(mode="json"),
+        )
+
+    def create_transaction_from_message(self, text: str, user: User) -> BotResponse:
+        parsed = self.parse_message(text)
+        if not parsed:
+            return BotResponse(message="Sorry, I could not understand that message.")
+
+        self.create_transaction_from_parsed(parsed, user.id)
+        return BotResponse(
+            message=f"Saved transaction. {self._build_preview(parsed)}",
             parsed=parsed.model_dump(mode="json"),
         )
 

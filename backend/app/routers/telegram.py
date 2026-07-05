@@ -9,6 +9,7 @@ from app.core.exceptions import ExpenseFlowException
 from app.schemas.bot import BotResponse
 from app.services.bot_message import BotMessageService
 from app.services.bot_transaction import BotTransactionService
+from app.services.bot_user import BotUserService
 from app.services.summary import SummaryService
 
 
@@ -29,11 +30,20 @@ async def telegram_webhook(
     if not message or not message.text:
         return BotResponse(message="Ignored unsupported Telegram update type.")
 
-    message_service = BotMessageService(SummaryService(db))
+    if not message.from_user:
+        return BotResponse(message="Could not identify Telegram sender.")
+
+    telegram_user = BotUserService(db).get_or_create_telegram_user(
+        telegram_id=message.from_user.id,
+        full_name=message.from_user.full_name,
+        telegram_username=message.from_user.username,
+    )
+
+    message_service = BotMessageService(SummaryService(db), telegram_user.id)
     if message.text.startswith("/"):
         response = handle_command(message.text, message_service)
     else:
-        response = BotTransactionService(db).preview_message(message.text)
+        response = BotTransactionService(db).create_transaction_from_message(message.text, telegram_user)
 
     await telegram_bot_manager.send_text(message.chat.id, response.message)
     return response

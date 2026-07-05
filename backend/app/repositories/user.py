@@ -16,7 +16,16 @@ class UserRepository:
     def get(self, user_id: uuid.UUID | str) -> User | None:
         return self.db.get(User, user_id)
 
+    def get_by_telegram_id(self, telegram_id: int | str) -> User | None:
+        return self.db.scalar(select(User).where(User.telegram_id == str(telegram_id)))
+
     def create(self, user: User) -> User:
+        self.db.add(user)
+        self.db.commit()
+        self.db.refresh(user)
+        return user
+
+    def save(self, user: User) -> User:
         self.db.add(user)
         self.db.commit()
         self.db.refresh(user)

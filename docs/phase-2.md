@@ -21,6 +21,8 @@
   - income entries
   - shared expenses
   - borrowed expenses
+- Automatic Telegram sender provisioning into `users.telegram_id`
+- Parsed bot messages are now saved as transactions for the Telegram-linked user
 - Parser tests and webhook tests
 
 ## Parser behavior
@@ -35,6 +37,7 @@
 - Parsing logic lives in `app/parser/` so it can later be replaced by an AI-powered parser without touching routers.
 - Webhook currently returns previews and command responses; authenticated user-to-Telegram identity linking is left for a later auth expansion.
 - Webhook also sends text replies back to Telegram chats when a bot token is configured.
+- Telegram users are auto-created on first message, so expenses and incomes can be persisted immediately from chat.
 - Command handlers are lightweight and intentionally keep advanced reporting/budget flows as placeholders until later phases.
 
 ## Verification notes
