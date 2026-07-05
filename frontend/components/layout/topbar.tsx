@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 
 export function Topbar() {
   const router = useRouter();
-  const { user, clearAuth } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
 
   const handleLogout = () => {
     clearAuth();
