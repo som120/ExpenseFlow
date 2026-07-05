@@ -7,6 +7,7 @@ Create Date: 2026-06-30 00:00:00
 
 import sqlalchemy as sa
 from alembic import op
+from sqlalchemy.dialects.postgresql import ENUM
 
 
 revision = "20260630_0001"
@@ -15,13 +16,17 @@ branch_labels = None
 depends_on = None
 
 
-transaction_type_enum = sa.Enum("personal", "shared", "borrowed", "income", name="transactiontype")
+transaction_type_enum = ENUM(
+    "personal",
+    "shared",
+    "borrowed",
+    "income",
+    name="transactiontype",
+    create_type=False,
+)
 
 
 def upgrade() -> None:
-    bind = op.get_bind()
-    transaction_type_enum.create(bind, checkfirst=True)
-
     op.create_table(
         "users",
         sa.Column("id", sa.Uuid(), primary_key=True, nullable=False),
@@ -97,6 +102,3 @@ def downgrade() -> None:
     op.drop_table("categories")
     op.drop_index(op.f("ix_users_email"), table_name="users")
     op.drop_table("users")
-
-    bind = op.get_bind()
-    transaction_type_enum.drop(bind, checkfirst=True)
