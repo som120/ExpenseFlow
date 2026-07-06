@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import Script from "next/script";
+import { useId } from "react";
 
 declare global {
   interface Window {
     onTelegramAuth?: (user: Record<string, unknown>) => void;
+    [key: string]: unknown;
   }
 }
 
@@ -22,28 +24,24 @@ interface TelegramLoginButtonProps {
 }
 
 export function TelegramLoginButton({ botName, onAuth }: TelegramLoginButtonProps) {
-  useEffect(() => {
-    window.onTelegramAuth = (user) => {
-      onAuth(user as never);
-    };
+  const callbackName = `onTelegramAuth_${useId().replace(/[^a-zA-Z0-9_]/g, "_")}`;
 
-    const script = document.createElement("script");
-    script.src = "https://telegram.org/js/telegram-widget.js?22";
-    script.async = true;
-    script.setAttribute("data-telegram-login", botName);
-    script.setAttribute("data-size", "large");
-    script.setAttribute("data-userpic", "false");
-    script.setAttribute("data-request-access", "write");
-    script.setAttribute("data-onauth", "onTelegramAuth(user)");
+  window[callbackName as keyof Window] = ((user: Record<string, unknown>) => {
+    onAuth(user as never);
+  }) as never;
 
-    const container = document.getElementById("telegram-login-container");
-    container?.replaceChildren();
-    container?.appendChild(script);
-
-    return () => {
-      window.onTelegramAuth = undefined;
-    };
-  }, [botName, onAuth]);
-
-  return <div id="telegram-login-container" className="flex justify-center" />;
+  return (
+    <div className="flex justify-center">
+      <Script
+        id={`telegram-login-${callbackName}`}
+        src="https://telegram.org/js/telegram-widget.js?22"
+        strategy="afterInteractive"
+        data-telegram-login={botName}
+        data-size="large"
+        data-userpic="false"
+        data-request-access="write"
+        data-onauth={`${callbackName}(user)`}
+      />
+    </div>
+  );
 }
