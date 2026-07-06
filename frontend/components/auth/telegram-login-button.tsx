@@ -1,6 +1,5 @@
 "use client";
 
-import Script from "next/script";
 import { useEffect, useId, useState } from "react";
 
 declare global {
@@ -25,6 +24,7 @@ interface TelegramLoginButtonProps {
 
 export function TelegramLoginButton({ botName, onAuth }: TelegramLoginButtonProps) {
   const [mounted, setMounted] = useState(false);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
   const callbackName = `onTelegramAuth_${useId().replace(/[^a-zA-Z0-9_]/g, "_")}`;
 
   useEffect(() => {
@@ -45,22 +45,55 @@ export function TelegramLoginButton({ botName, onAuth }: TelegramLoginButtonProp
     };
   }, [callbackName, mounted, onAuth]);
 
+  useEffect(() => {
+    if (!mounted) {
+      return;
+    }
+
+    const existingScript = document.querySelector('script[src="https://telegram.org/js/telegram-widget.js?22"]');
+    if (existingScript) {
+      setScriptLoaded(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://telegram.org/js/telegram-widget.js?22";
+    script.async = true;
+    script.onload = () => setScriptLoaded(true);
+    document.body.appendChild(script);
+
+    return () => {
+      script.remove();
+    };
+  }, [mounted]);
+
+  useEffect(() => {
+    if (!scriptLoaded) {
+      return;
+    }
+
+    const container = document.getElementById(`telegram-login-container-${callbackName}`);
+    if (!container) {
+      return;
+    }
+
+    container.replaceChildren();
+
+    const widgetScript = document.createElement("script");
+    widgetScript.src = "https://telegram.org/js/telegram-widget.js?22";
+    widgetScript.async = true;
+    widgetScript.setAttribute("data-telegram-login", botName);
+    widgetScript.setAttribute("data-size", "large");
+    widgetScript.setAttribute("data-userpic", "false");
+    widgetScript.setAttribute("data-request-access", "write");
+    widgetScript.setAttribute("data-onauth", `${callbackName}(user)`);
+
+    container.appendChild(widgetScript);
+  }, [botName, callbackName, scriptLoaded]);
+
   if (!mounted) {
     return <div className="flex justify-center" />;
   }
 
-  return (
-    <div className="flex justify-center">
-      <Script
-        id={`telegram-login-${callbackName}`}
-        src="https://telegram.org/js/telegram-widget.js?22"
-        strategy="afterInteractive"
-        data-telegram-login={botName}
-        data-size="large"
-        data-userpic="false"
-        data-request-access="write"
-        data-onauth={`${callbackName}(user)`}
-      />
-    </div>
-  );
+  return <div id={`telegram-login-container-${callbackName}`} className="flex justify-center" />;
 }
