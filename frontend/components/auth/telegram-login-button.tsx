@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { useId } from "react";
+import { useEffect, useId, useState } from "react";
 
 declare global {
   interface Window {
@@ -24,11 +24,30 @@ interface TelegramLoginButtonProps {
 }
 
 export function TelegramLoginButton({ botName, onAuth }: TelegramLoginButtonProps) {
+  const [mounted, setMounted] = useState(false);
   const callbackName = `onTelegramAuth_${useId().replace(/[^a-zA-Z0-9_]/g, "_")}`;
 
-  window[callbackName as keyof Window] = ((user: Record<string, unknown>) => {
-    onAuth(user as never);
-  }) as never;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) {
+      return;
+    }
+
+    window[callbackName as keyof Window] = ((user: Record<string, unknown>) => {
+      onAuth(user as never);
+    }) as never;
+
+    return () => {
+      delete window[callbackName as keyof Window];
+    };
+  }, [callbackName, mounted, onAuth]);
+
+  if (!mounted) {
+    return <div className="flex justify-center" />;
+  }
 
   return (
     <div className="flex justify-center">
