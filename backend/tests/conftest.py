@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.api.deps import get_db
+from app.core.config import settings
 from app.core.database import Base, get_engine, get_session_factory
 from app.models import category, friend, transaction, user  # noqa: F401
 from app.main import create_application
@@ -35,6 +36,7 @@ def override_database_session() -> Generator[Session, None, None]:
 def setup_database() -> Generator[None, None, None]:
     get_engine.cache_clear()
     get_session_factory.cache_clear()
+    settings.telegram_bot_token = "test-telegram-token"
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     yield

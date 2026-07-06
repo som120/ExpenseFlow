@@ -20,6 +20,24 @@ class Token(BaseModel):
     token_type: str = "bearer"
 
 
+class AuthResponse(Token):
+    user: "UserRead"
+
+
+class TelegramAuthPayload(BaseModel):
+    id: int
+    first_name: str
+    last_name: str | None = None
+    username: str | None = None
+    photo_url: str | None = None
+    auth_date: int
+    hash: str
+
+
+class TelegramLinkPayload(TelegramAuthPayload):
+    pass
+
+
 class UserRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -28,3 +46,6 @@ class UserRead(BaseModel):
     full_name: str
     is_active: bool
     created_at: datetime
+
+
+AuthResponse.model_rebuild()

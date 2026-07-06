@@ -33,6 +33,7 @@ The repository now also includes:
 - Dashboard UI
 - Transactions, friends, and budgets pages
 - Backend friends and budgets APIs
+- Telegram website login/linking flow using `users.telegram_id`
 
 ## Structure
 

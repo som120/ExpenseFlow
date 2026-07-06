@@ -1,4 +1,4 @@
-import type { AuthUser, Budget, Friend, Summary, Transaction } from "@/types";
+import type { AuthResponse, AuthUser, Budget, Friend, Summary, TelegramAuthPayload, Transaction } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v1";
 
@@ -33,6 +33,10 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  telegramLogin: (payload: TelegramAuthPayload) =>
+    request<AuthResponse>("/auth/telegram", { method: "POST", body: JSON.stringify(payload) }),
+  telegramLink: (token: string, payload: TelegramAuthPayload) =>
+    request<AuthUser>("/auth/telegram/link", { method: "POST", body: JSON.stringify(payload) }, token),
   me: (token: string) => request<AuthUser>("/auth/me", {}, token),
   summary: (token: string) => request<Summary>("/summary", {}, token),
   transactions: (token: string) => request<Transaction[]>("/transactions", {}, token),

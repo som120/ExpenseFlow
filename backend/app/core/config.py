@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     )
     backend_cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
     telegram_bot_token: str | None = Field(default=None, alias="TELEGRAM_BOT_TOKEN")
+    telegram_bot_username: str | None = Field(default=None, alias="TELEGRAM_BOT_USERNAME")
     telegram_webhook_secret: str | None = Field(default=None, alias="TELEGRAM_WEBHOOK_SECRET")
     telegram_webhook_path: str = Field(default="/api/v1/telegram/webhook", alias="TELEGRAM_WEBHOOK_PATH")
 

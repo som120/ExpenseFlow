@@ -2,6 +2,7 @@
 
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { QuickAddForm } from "@/components/dashboard/quick-add-form";
+import { TelegramLinkCard } from "@/components/layout/telegram-link-card";
 import { Card } from "@/components/ui/card";
 import { useSummaryQuery, useTransactionsQuery } from "@/hooks/use-dashboard-data";
 
@@ -37,7 +38,10 @@ export default function DashboardPage() {
             ))}
           </div>
         </Card>
-        <QuickAddForm />
+        <div className="space-y-6">
+          <QuickAddForm />
+          <TelegramLinkCard />
+        </div>
       </div>
     </div>
   );

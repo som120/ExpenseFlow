@@ -10,6 +10,7 @@
 - Dashboard, transactions, friends, and budgets pages
 - React Query client utilities and Zustand auth store
 - Quick add transaction form wired to backend API
+- Telegram login/linking hooks so website and bot can share the same user identity
 
 ## Backend APIs added
 
@@ -25,6 +26,7 @@
 ## Frontend notes
 
 - Set `NEXT_PUBLIC_API_BASE_URL` in `frontend/.env.local` using `frontend/env.sample` as a base.
+- Set `NEXT_PUBLIC_TELEGRAM_BOT_USERNAME` in `frontend/.env.local` to enable Telegram login/link UI.
 - Current frontend is production-oriented scaffold with core pages and data hooks.
 - Frontend auth now persists in local storage, so after login the dashboard can fetch real user data instead of showing guest defaults.
 - Advanced polish like command palette, dark/light switching, skeletons, and dialogs can be layered next.
