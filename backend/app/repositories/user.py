@@ -1,5 +1,7 @@
 import uuid
 
+from datetime import UTC, datetime
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -18,6 +20,10 @@ class UserRepository:
 
     def get_by_telegram_id(self, telegram_id: int | str) -> User | None:
         return self.db.scalar(select(User).where(User.telegram_id == str(telegram_id)))
+
+    def get_by_telegram_link_code(self, code: str) -> User | None:
+        stmt = select(User).where(User.telegram_link_code == code).where(User.telegram_link_code_expires_at > datetime.now(UTC))
+        return self.db.scalar(stmt)
 
     def create(self, user: User) -> User:
         self.db.add(user)

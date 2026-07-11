@@ -1,8 +1,9 @@
 from fastapi import APIRouter, status
 
 from app.api.deps import CurrentUser, DbSession
-from app.schemas.auth import AuthResponse, TelegramLinkPayload, Token, UserLogin, UserRead, UserRegister
+from app.schemas.auth import AuthResponse, TelegramLinkPayload, TelegramManualLinkRead, Token, UserLogin, UserRead, UserRegister
 from app.services.auth import AuthService
+from app.services.telegram_link import TelegramLinkService
 from app.services.telegram_auth import TelegramAuthService
 
 
@@ -32,3 +33,9 @@ def telegram_auth(payload: TelegramLinkPayload, db: DbSession):
 @router.post("/telegram/link", response_model=UserRead)
 def telegram_link(payload: TelegramLinkPayload, db: DbSession, current_user: CurrentUser):
     return TelegramAuthService(db).link_current_user(current_user, payload)
+
+
+@router.post("/telegram/link-code", response_model=TelegramManualLinkRead)
+def generate_telegram_link_code(db: DbSession, current_user: CurrentUser):
+    result = TelegramLinkService(db).generate_link_code(current_user)
+    return TelegramManualLinkRead(**result)

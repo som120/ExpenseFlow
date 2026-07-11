@@ -1,5 +1,6 @@
 from app.bot.keyboards import help_text
 from app.schemas.bot import BotResponse
+from app.services.bot_user import BotUserService
 from app.services.bot_message import BotMessageService
 
 
@@ -43,3 +44,21 @@ def handle_command(command: str, service: BotMessageService) -> BotResponse:
         return BotResponse(message="Telegram bot settings will expand in later phases.", command="settings")
 
     return BotResponse(message="Unknown command. Use /help for supported commands.", command="unknown")
+
+
+def handle_link_command(
+    command: str,
+    bot_user_service: BotUserService,
+    telegram_id: int,
+    full_name: str,
+    telegram_username: str | None,
+) -> BotResponse:
+    parts = command.strip().split()
+    if len(parts) != 2:
+        return BotResponse(message="Usage: /link 123456", command="link")
+
+    linked_user = bot_user_service.consume_manual_link_code(parts[1], telegram_id, full_name, telegram_username)
+    return BotResponse(
+        message=f"Telegram linked successfully to ExpenseFlow account: {linked_user.full_name}",
+        command="link",
+    )

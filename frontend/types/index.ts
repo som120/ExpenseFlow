@@ -117,3 +117,9 @@ export interface ExportFile {
   content: string;
   media_type: string;
 }
+
+export interface TelegramManualLink {
+  code: string;
+  expires_at: string;
+  instructions: string;
+}

@@ -38,6 +38,12 @@ class TelegramLinkPayload(TelegramAuthPayload):
     pass
 
 
+class TelegramManualLinkRead(BaseModel):
+    code: str
+    expires_at: str
+    instructions: str
+
+
 class UserRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

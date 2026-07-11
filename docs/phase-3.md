@@ -11,6 +11,7 @@
 - React Query client utilities and Zustand auth store
 - Quick add transaction form wired to backend API
 - Telegram login/linking hooks so website and bot can share the same user identity
+- Manual Telegram linking fallback with website-generated code + bot `/link CODE`
 
 ## Backend APIs added
 
@@ -29,6 +30,7 @@
 - Set `NEXT_PUBLIC_TELEGRAM_BOT_USERNAME` in `frontend/.env.local` to enable Telegram login/link UI.
 - Current frontend is production-oriented scaffold with core pages and data hooks.
 - Frontend auth now persists in local storage, so after login the dashboard can fetch real user data instead of showing guest defaults.
+- If Telegram website login is blocked or unreliable, users can generate a short-lived code in the dashboard and send `/link CODE` to the bot.
 - Advanced polish like command palette, dark/light switching, skeletons, and dialogs can be layered next.
 
 ## Verification notes
