@@ -1,7 +1,13 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useDeleteBudget } from "@/hooks/use-management";
 import type { Budget } from "@/types";
 
 export function BudgetList({ budgets }: { budgets: Budget[] }) {
+  const deleteBudget = useDeleteBudget();
+
   return (
     <div className="grid gap-4 md:grid-cols-2">
       {budgets.map((budget) => {
@@ -22,6 +28,9 @@ export function BudgetList({ budgets }: { budgets: Budget[] }) {
               <div className="h-3 rounded-full bg-primary" style={{ width: `${progress}%` }} />
             </div>
             <p className="mt-3 text-sm text-muted-foreground">Spent ₹{budget.spent_amount} of ₹{budget.amount}</p>
+            <Button className="mt-4" variant="ghost" onClick={() => deleteBudget.mutate(budget.id)}>
+              Delete Budget
+            </Button>
           </Card>
         );
       })}

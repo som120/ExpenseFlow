@@ -49,10 +49,18 @@ export const api = {
   transactions: (token: string) => request<Transaction[]>("/transactions", {}, token),
   createTransaction: (token: string, payload: unknown) =>
     request<Transaction>("/transactions", { method: "POST", body: JSON.stringify(payload) }, token),
+  updateTransaction: (token: string, transactionId: string, payload: unknown) =>
+    request<Transaction>(`/transactions/${transactionId}`, { method: "PUT", body: JSON.stringify(payload) }, token),
+  deleteTransaction: (token: string, transactionId: string) =>
+    request<void>(`/transactions/${transactionId}`, { method: "DELETE" }, token),
   friends: (token: string) => request<Friend[]>("/friends", {}, token),
   createFriend: (token: string, payload: unknown) =>
     request<Friend>("/friends", { method: "POST", body: JSON.stringify(payload) }, token),
   budgets: (token: string) => request<Budget[]>("/budgets", {}, token),
   createBudget: (token: string, payload: unknown) =>
     request<Budget>("/budgets", { method: "POST", body: JSON.stringify(payload) }, token),
+  updateBudget: (token: string, budgetId: string, payload: unknown) =>
+    request<Budget>(`/budgets/${budgetId}`, { method: "PUT", body: JSON.stringify(payload) }, token),
+  deleteBudget: (token: string, budgetId: string) =>
+    request<void>(`/budgets/${budgetId}`, { method: "DELETE" }, token),
 };

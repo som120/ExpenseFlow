@@ -32,6 +32,8 @@
 - Current frontend is production-oriented scaffold with core pages and data hooks.
 - Frontend auth now persists in local storage, so after login the dashboard can fetch real user data instead of showing guest defaults.
 - If Telegram website login is blocked or unreliable, users can generate a short-lived code in the dashboard and send `/link CODE` to the bot.
+- Transaction management UI now supports create, edit, and delete from the web dashboard.
+- Budget page now supports creating and deleting budgets directly from the web dashboard.
 - Advanced polish like command palette, dark/light switching, skeletons, and dialogs can be layered next.
 
 ## Verification notes

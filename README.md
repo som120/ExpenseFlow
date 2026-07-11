@@ -36,6 +36,8 @@ The repository now also includes:
 - Telegram website login/linking flow using `users.telegram_id`
 - Manual Telegram linking fallback via `/link CODE`
 - Linked Telegram placeholder accounts are merged into the website account during manual linking
+- Transaction add/edit/delete UI on the website
+- Budget creation and deletion UI on the website
 
 ## Phase 4 status
 
