@@ -44,3 +44,23 @@ export function useBudgetsQuery() {
     enabled: hydrated && Boolean(token),
   });
 }
+
+export function useAnalyticsQuery() {
+  const token = useAuthStore((state) => state.token);
+  const hydrated = useAuthStore((state) => state.hydrated);
+  return useQuery({
+    queryKey: ["analytics", token],
+    queryFn: () => api.analytics(token!),
+    enabled: hydrated && Boolean(token),
+  });
+}
+
+export function useReportsQuery() {
+  const token = useAuthStore((state) => state.token);
+  const hydrated = useAuthStore((state) => state.hydrated);
+  return useQuery({
+    queryKey: ["reports", token],
+    queryFn: () => api.reports(token!),
+    enabled: hydrated && Boolean(token),
+  });
+}

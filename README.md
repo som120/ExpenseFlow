@@ -35,6 +35,15 @@ The repository now also includes:
 - Backend friends and budgets APIs
 - Telegram website login/linking flow using `users.telegram_id`
 
+## Phase 4 status
+
+The repository now also includes:
+
+- Analytics backend and frontend flows
+- Reports endpoint and export actions
+- CSV / Excel / PDF export support
+- Trend and category charts
+
 ## Structure
 
 - `backend/` – FastAPI app, migrations, and tests

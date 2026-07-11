@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import type { Route } from "next";
-import { LayoutDashboard, Receipt, Users, Wallet } from "lucide-react";
+import { BarChart3, FileText, LayoutDashboard, Receipt, Users, Wallet } from "lucide-react";
 
 const items: Array<{ href: Route; label: string; icon: typeof LayoutDashboard }> = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/transactions", label: "Transactions", icon: Receipt },
   { href: "/friends", label: "Friends", icon: Users },
   { href: "/budgets", label: "Budgets", icon: Wallet },
+  { href: "/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/reports", label: "Reports", icon: FileText },
 ];
 
 export function Sidebar() {

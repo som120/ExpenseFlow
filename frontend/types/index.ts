@@ -72,3 +72,48 @@ export interface AuthResponse {
   token_type: string;
   user: AuthUser;
 }
+
+export interface TrendPoint {
+  label: string;
+  income: string;
+  expenses: string;
+  savings: string;
+}
+
+export interface CategoryBreakdownItem {
+  category: string;
+  amount: string;
+}
+
+export interface FriendBalanceItem {
+  friend: string;
+  amount: string;
+  direction: string;
+}
+
+export interface Analytics {
+  monthly_trends: TrendPoint[];
+  category_breakdown: CategoryBreakdownItem[];
+  friend_balances: FriendBalanceItem[];
+  top_spending_category?: string | null;
+  average_monthly_spend: string;
+  highest_expense: string;
+  highest_income: string;
+}
+
+export interface ReportSection {
+  title: string;
+  value: string;
+}
+
+export interface Report {
+  report_type: string;
+  sections: ReportSection[];
+  generated_at: string;
+}
+
+export interface ExportFile {
+  filename: string;
+  content: string;
+  media_type: string;
+}
