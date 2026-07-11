@@ -1,3 +1,5 @@
+import logging
+
 from aiogram.types import Update
 from fastapi import APIRouter, Header, status
 
@@ -11,6 +13,9 @@ from app.services.bot_message import BotMessageService
 from app.services.bot_transaction import BotTransactionService
 from app.services.bot_user import BotUserService
 from app.services.summary import SummaryService
+
+
+logger = logging.getLogger(__name__)
 
 
 router = APIRouter()
@@ -42,18 +47,24 @@ async def telegram_webhook(
     bot_user_service = BotUserService(db)
 
     message_service = BotMessageService(SummaryService(db), telegram_user.id)
-    if message.text.startswith("/link "):
-        response = handle_link_command(
-            message.text,
-            bot_user_service,
-            message.from_user.id,
-            message.from_user.full_name,
-            message.from_user.username,
-        )
-    elif message.text.startswith("/"):
-        response = handle_command(message.text, message_service)
-    else:
-        response = BotTransactionService(db).create_transaction_from_message(message.text, telegram_user)
+    try:
+        if message.text.startswith("/link "):
+            response = handle_link_command(
+                message.text,
+                bot_user_service,
+                message.from_user.id,
+                message.from_user.full_name,
+                message.from_user.username,
+            )
+        elif message.text.startswith("/"):
+            response = handle_command(message.text, message_service)
+        else:
+            response = BotTransactionService(db).create_transaction_from_message(message.text, telegram_user)
+    except ExpenseFlowException as exc:
+        response = BotResponse(message=exc.detail)
+    except Exception as exc:
+        logger.exception("Unhandled Telegram bot error", exc_info=exc)
+        response = BotResponse(message="Something went wrong while processing your message.")
 
     await telegram_bot_manager.send_text(message.chat.id, response.message)
     return response

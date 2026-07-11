@@ -15,6 +15,7 @@ def test_telegram_help_command(client):
 
     assert response.status_code == 200
     assert "Supported commands" in response.json()["message"]
+    assert "/link CODE" in response.json()["message"]
 
 
 def test_telegram_natural_language_preview(client):

@@ -36,6 +36,19 @@ class BotUserService:
             return user
 
         email = self._build_telegram_email(telegram_id, telegram_username)
+        existing_email_user = self.users.get_by_email(email)
+        if existing_email_user:
+            updated = False
+            if existing_email_user.telegram_id != str(telegram_id):
+                existing_email_user.telegram_id = str(telegram_id)
+                updated = True
+            if full_name and existing_email_user.full_name != full_name:
+                existing_email_user.full_name = full_name
+                updated = True
+            if updated:
+                return self.users.save(existing_email_user)
+            return existing_email_user
+
         user = User(
             email=email,
             full_name=full_name or f"Telegram User {telegram_id}",

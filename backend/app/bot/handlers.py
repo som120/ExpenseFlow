@@ -4,8 +4,13 @@ from app.services.bot_user import BotUserService
 from app.services.bot_message import BotMessageService
 
 
+def _command_name(command: str) -> str:
+    token = command.strip().split()[0].lower()
+    return token.split("@", 1)[0]
+
+
 def handle_command(command: str, service: BotMessageService) -> BotResponse:
-    normalized = command.strip().lower()
+    normalized = _command_name(command)
 
     if normalized == "/start":
         return BotResponse(

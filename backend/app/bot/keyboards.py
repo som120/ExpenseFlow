@@ -1,7 +1,7 @@
 def help_text() -> str:
     return (
         "Supported commands:\n"
-        "/start\n/help\n/balance\n/summary\n/month\n/report\n/export\n/friends\n/budgets\n/settings\n\n"
+        "/start\n/help\n/link CODE\n/balance\n/summary\n/month\n/report\n/export\n/friends\n/budgets\n/settings\n\n"
         "Natural language examples:\n"
         "450 coffee\n"
         "Spent 350 on pizza\n"
