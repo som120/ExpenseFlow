@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from app.models.friend import Friend
@@ -32,4 +32,8 @@ class FriendRepository:
 
     def delete(self, friend: Friend) -> None:
         self.db.delete(friend)
+        self.db.commit()
+
+    def reassign_user(self, source_user_id: uuid.UUID, target_user_id: uuid.UUID) -> None:
+        self.db.execute(update(Friend).where(Friend.user_id == source_user_id).values(user_id=target_user_id))
         self.db.commit()

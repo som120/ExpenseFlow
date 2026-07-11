@@ -9,9 +9,12 @@ from app.bot.manager import telegram_bot_manager
 from app.core.config import settings
 from app.core.exceptions import ExpenseFlowException
 from app.schemas.bot import BotResponse
+from app.services.budget import BudgetService
 from app.services.bot_message import BotMessageService
 from app.services.bot_transaction import BotTransactionService
 from app.services.bot_user import BotUserService
+from app.services.friend import FriendService
+from app.services.report import ReportService
 from app.services.summary import SummaryService
 
 
@@ -46,7 +49,13 @@ async def telegram_webhook(
 
     bot_user_service = BotUserService(db)
 
-    message_service = BotMessageService(SummaryService(db), telegram_user.id)
+    message_service = BotMessageService(
+        SummaryService(db),
+        telegram_user.id,
+        report_service=ReportService(db),
+        budget_service=BudgetService(db),
+        friend_service=FriendService(db),
+    )
     try:
         if message.text.startswith("/link "):
             response = handle_link_command(

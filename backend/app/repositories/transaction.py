@@ -1,5 +1,6 @@
 import uuid
 
+from sqlalchemy import update
 from sqlalchemy import Select, select
 from sqlalchemy.orm import Session, selectinload
 
@@ -37,6 +38,14 @@ class TransactionRepository:
         self.db.commit()
         self.db.refresh(transaction)
         return transaction
+
+    def reassign_user(self, source_user_id: uuid.UUID, target_user_id: uuid.UUID) -> None:
+        self.db.execute(
+            update(Transaction)
+            .where(Transaction.user_id == source_user_id)
+            .values(user_id=target_user_id)
+        )
+        self.db.commit()
 
     def _base_query(self) -> Select[tuple[Transaction]]:
         return select(Transaction).options(

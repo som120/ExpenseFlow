@@ -31,22 +31,22 @@ def handle_command(command: str, service: BotMessageService) -> BotResponse:
         return service.build_summary_response()
 
     if normalized == "/month":
-        return BotResponse(message="Monthly drill-down will be expanded in Phase 4 analytics.", command="month")
+        return service.build_month_response()
 
     if normalized == "/report":
-        return BotResponse(message="Reports module is planned for later phases.", command="report")
+        return service.build_report_response()
 
     if normalized == "/export":
-        return BotResponse(message="Export flows are planned for a later phase.", command="export")
+        return service.build_export_response()
 
     if normalized == "/friends":
-        return BotResponse(message="Friends management UI/API will expand in upcoming phases.", command="friends")
+        return service.build_friends_response()
 
     if normalized == "/budgets":
-        return BotResponse(message="Budget management arrives in Phase 3.", command="budgets")
+        return service.build_budgets_response()
 
     if normalized == "/settings":
-        return BotResponse(message="Telegram bot settings will expand in later phases.", command="settings")
+        return service.build_settings_response()
 
     return BotResponse(message="Unknown command. Use /help for supported commands.", command="unknown")
 

@@ -35,6 +35,7 @@ The repository now also includes:
 - Backend friends and budgets APIs
 - Telegram website login/linking flow using `users.telegram_id`
 - Manual Telegram linking fallback via `/link CODE`
+- Linked Telegram placeholder accounts are merged into the website account during manual linking
 
 ## Phase 4 status
 

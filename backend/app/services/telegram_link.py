@@ -8,12 +8,19 @@ from sqlalchemy.orm import Session
 
 from app.core.exceptions import ExpenseFlowException
 from app.models.user import User
+from app.repositories.budget import BudgetRepository
+from app.repositories.friend import FriendRepository
+from app.repositories.transaction import TransactionRepository
 from app.repositories.user import UserRepository
 
 
 class TelegramLinkService:
     def __init__(self, db: Session):
+        self.db = db
         self.users = UserRepository(db)
+        self.transactions = TransactionRepository(db)
+        self.friends = FriendRepository(db)
+        self.budgets = BudgetRepository(db)
 
     def generate_link_code(self, user: User) -> dict[str, str]:
         code = f"{secrets.randbelow(900000) + 100000}"
@@ -33,8 +40,11 @@ class TelegramLinkService:
 
         existing = self.users.get_by_telegram_id(telegram_user.telegram_id)
         if existing and existing.id != target_user.id and existing.email.endswith("@bot.expenseflow.local"):
-            existing.telegram_id = None
-            self.users.save(existing)
+            self.transactions.reassign_user(existing.id, target_user.id)
+            self.friends.reassign_user(existing.id, target_user.id)
+            self.budgets.reassign_user(existing.id, target_user.id)
+            self.db.delete(existing)
+            self.db.commit()
 
         target_user.telegram_id = telegram_user.telegram_id
         target_user.telegram_link_code = None

@@ -12,6 +12,7 @@
 - Quick add transaction form wired to backend API
 - Telegram login/linking hooks so website and bot can share the same user identity
 - Manual Telegram linking fallback with website-generated code + bot `/link CODE`
+- Manual linking now merges prior Telegram-only data into the linked website account so balances and transactions stay unified.
 
 ## Backend APIs added
 
