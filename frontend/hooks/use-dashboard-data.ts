@@ -25,12 +25,12 @@ export function useTransactionsQuery() {
   });
 }
 
-export function useFriendsQuery() {
+export function useFriendsQuery(filters?: { fromDate?: string; toDate?: string }) {
   const token = useAuthStore((state) => state.token);
   const hydrated = useAuthStore((state) => state.hydrated);
   return useQuery({
-    queryKey: ["friends", token],
-    queryFn: () => api.friends(token!),
+    queryKey: ["friends", token, filters?.fromDate, filters?.toDate],
+    queryFn: () => api.friends(token!, { from_date: filters?.fromDate, to_date: filters?.toDate }),
     enabled: hydrated && Boolean(token),
   });
 }

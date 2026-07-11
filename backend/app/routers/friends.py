@@ -1,4 +1,5 @@
 import uuid
+from datetime import date
 
 from fastapi import APIRouter, Response, status
 
@@ -16,8 +17,8 @@ def create_friend(payload: FriendCreate, db: DbSession, current_user: CurrentUse
 
 
 @router.get("", response_model=list[FriendRead])
-def list_friends(db: DbSession, current_user: CurrentUser):
-    return FriendService(db).list(current_user.id)
+def list_friends(db: DbSession, current_user: CurrentUser, from_date: date | None = None, to_date: date | None = None):
+    return FriendService(db).list(current_user.id, from_date=from_date, to_date=to_date)
 
 
 @router.put("/{friend_id}", response_model=FriendRead)

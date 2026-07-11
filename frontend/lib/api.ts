@@ -53,7 +53,13 @@ export const api = {
     request<Transaction>(`/transactions/${transactionId}`, { method: "PUT", body: JSON.stringify(payload) }, token),
   deleteTransaction: (token: string, transactionId: string) =>
     request<void>(`/transactions/${transactionId}`, { method: "DELETE" }, token),
-  friends: (token: string) => request<Friend[]>("/friends", {}, token),
+  friends: (token: string, params?: { from_date?: string; to_date?: string }) => {
+    const search = new URLSearchParams();
+    if (params?.from_date) search.set("from_date", params.from_date);
+    if (params?.to_date) search.set("to_date", params.to_date);
+    const suffix = search.toString() ? `?${search.toString()}` : "";
+    return request<Friend[]>(`/friends${suffix}`, {}, token);
+  },
   createFriend: (token: string, payload: unknown) =>
     request<Friend>("/friends", { method: "POST", body: JSON.stringify(payload) }, token),
   budgets: (token: string) => request<Budget[]>("/budgets", {}, token),

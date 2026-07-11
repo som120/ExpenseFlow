@@ -50,6 +50,15 @@ export function useCreateBudget() {
   });
 }
 
+export function useCreateFriend() {
+  const token = useAuthStore((state) => state.token);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: unknown) => api.createFriend(token!, payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["friends"] }),
+  });
+}
+
 export function useDeleteBudget() {
   const token = useAuthStore((state) => state.token);
   const queryClient = useQueryClient();

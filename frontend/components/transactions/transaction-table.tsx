@@ -15,6 +15,7 @@ export function TransactionTable({ transactions, onEdit }: { transactions: Trans
         <thead className="bg-accent/40 text-muted-foreground">
           <tr>
             <th className="px-4 py-3">Description</th>
+            <th className="px-4 py-3">Date</th>
             <th className="px-4 py-3">Type</th>
             <th className="px-4 py-3">Category</th>
             <th className="px-4 py-3">Amount</th>
@@ -26,6 +27,7 @@ export function TransactionTable({ transactions, onEdit }: { transactions: Trans
           {transactions.map((transaction) => (
             <tr key={transaction.id} className="border-t">
               <td className="px-4 py-3">{transaction.description}</td>
+              <td className="px-4 py-3">{transaction.transaction_date}</td>
               <td className="px-4 py-3"><Badge>{transaction.transaction_type}</Badge></td>
               <td className="px-4 py-3">{transaction.category_name ?? "Others"}</td>
               <td className="px-4 py-3">₹{transaction.amount}</td>

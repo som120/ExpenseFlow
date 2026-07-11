@@ -9,6 +9,10 @@ export function FriendList({ friends }: { friends: Friend[] }) {
           <h3 className="text-lg font-semibold">{friend.name}</h3>
           <p className="text-sm text-muted-foreground">@{friend.telegram_username ?? "not-set"}</p>
           <p className="mt-2 text-sm text-muted-foreground">{friend.notes ?? "No notes yet."}</p>
+          <div className="mt-4 grid gap-2 text-sm">
+            <p>Owes you: ₹{friend.total_owed_to_you ?? "0.00"}</p>
+            <p>You owe: ₹{friend.total_you_owe ?? "0.00"}</p>
+          </div>
         </Card>
       ))}
     </div>

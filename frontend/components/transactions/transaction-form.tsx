@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useFriendsQuery } from "@/hooks/use-dashboard-data";
 import { useCreateTransaction, useUpdateTransaction } from "@/hooks/use-management";
 import type { Transaction } from "@/types";
 
@@ -14,6 +15,7 @@ const today = new Date().toISOString().slice(0, 10);
 export function TransactionForm({ selected, onDone }: { selected?: Transaction | null; onDone?: () => void }) {
   const createTransaction = useCreateTransaction();
   const updateTransaction = useUpdateTransaction();
+  const { data: friends } = useFriendsQuery();
   const [transactionType, setTransactionType] = useState("personal");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
@@ -21,6 +23,7 @@ export function TransactionForm({ selected, onDone }: { selected?: Transaction |
   const [categoryName, setCategoryName] = useState("Others");
   const [paymentOwner, setPaymentOwner] = useState("self");
   const [transactionDate, setTransactionDate] = useState(today);
+  const [participantNames, setParticipantNames] = useState("");
 
   useEffect(() => {
     if (!selected) {
@@ -31,6 +34,7 @@ export function TransactionForm({ selected, onDone }: { selected?: Transaction |
       setCategoryName("Others");
       setPaymentOwner("self");
       setTransactionDate(today);
+      setParticipantNames("");
       return;
     }
 
@@ -41,11 +45,18 @@ export function TransactionForm({ selected, onDone }: { selected?: Transaction |
     setCategoryName(selected.category_name ?? "Others");
     setPaymentOwner(selected.payment_owner);
     setTransactionDate(selected.transaction_date);
+    setParticipantNames(selected.participants.map((participant) => participant.participant_name).join(", "));
   }, [selected]);
 
   const mutation = selected ? updateTransaction : createTransaction;
 
   const handleSubmit = () => {
+    const participantList = participantNames
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+    const shareAmount = participantList.length > 0 ? (Number(amount) / (participantList.length + 1)).toFixed(2) : "0.00";
+
     const payload = {
       transaction_type: transactionType,
       category_name: categoryName,
@@ -54,7 +65,15 @@ export function TransactionForm({ selected, onDone }: { selected?: Transaction |
       description,
       payment_owner: paymentOwner,
       transaction_date: transactionDate,
-      participants: [],
+      participants:
+        transactionType === "shared" || transactionType === "borrowed"
+          ? participantList.map((name) => ({
+              participant_name: name,
+              share_amount: shareAmount,
+              pending_amount: shareAmount,
+              status: "pending",
+            }))
+          : [],
     };
 
     if (selected) {
@@ -112,6 +131,17 @@ export function TransactionForm({ selected, onDone }: { selected?: Transaction |
           <Label>Date</Label>
           <Input type="date" value={transactionDate} onChange={(e) => setTransactionDate(e.target.value)} />
         </div>
+        {(transactionType === "shared" || transactionType === "borrowed") && (
+          <div className="md:col-span-2">
+            <Label>Participants</Label>
+            <Input
+              value={participantNames}
+              onChange={(e) => setParticipantNames(e.target.value)}
+              placeholder={friends?.length ? friends.map((friend) => friend.name).join(", ") : "Om, Rahul"}
+            />
+            <p className="mt-1 text-xs text-muted-foreground">Comma-separated names for equal split.</p>
+          </div>
+        )}
       </div>
       <Button className="mt-4" onClick={handleSubmit} disabled={mutation.isPending || !description || !amount}>
         {mutation.isPending ? "Saving..." : selected ? "Update Transaction" : "Create Transaction"}

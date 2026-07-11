@@ -38,6 +38,10 @@ The repository now also includes:
 - Linked Telegram placeholder accounts are merged into the website account during manual linking
 - Transaction add/edit/delete UI on the website
 - Budget creation and deletion UI on the website
+- Friend creation UI on the website
+- Transaction search/filter and participant input UI on the website
+- Transaction list date visibility on the website
+- Friend balance date-range filters on the website
 
 ## Phase 4 status
 

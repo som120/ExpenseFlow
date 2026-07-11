@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -27,3 +28,5 @@ class FriendRead(FriendBase):
 
     id: uuid.UUID
     created_at: datetime
+    total_owed_to_you: Decimal = Decimal("0.00")
+    total_you_owe: Decimal = Decimal("0.00")

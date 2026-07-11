@@ -34,6 +34,10 @@
 - If Telegram website login is blocked or unreliable, users can generate a short-lived code in the dashboard and send `/link CODE` to the bot.
 - Transaction management UI now supports create, edit, and delete from the web dashboard.
 - Budget page now supports creating and deleting budgets directly from the web dashboard.
+- Friends page now supports adding friends from the web dashboard.
+- Transactions page now supports search/filter and basic shared/borrowed participant entry.
+- Transactions list now shows transaction dates.
+- Friends page supports date-range filtering for owed balances based on transaction dates.
 - Advanced polish like command palette, dark/light switching, skeletons, and dialogs can be layered next.
 
 ## Verification notes

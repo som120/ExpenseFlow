@@ -36,6 +36,8 @@ export interface Friend {
   phone?: string | null;
   notes?: string | null;
   created_at: string;
+  total_owed_to_you?: string;
+  total_you_owe?: string;
 }
 
 export interface Budget {
