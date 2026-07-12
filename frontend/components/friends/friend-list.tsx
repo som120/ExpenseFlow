@@ -1,3 +1,7 @@
+"use client";
+
+import Link from "next/link";
+
 import { Card } from "@/components/ui/card";
 import type { Friend } from "@/types";
 
@@ -13,6 +17,9 @@ export function FriendList({ friends }: { friends: Friend[] }) {
             <p>Owes you: ₹{friend.total_owed_to_you ?? "0.00"}</p>
             <p>You owe: ₹{friend.total_you_owe ?? "0.00"}</p>
           </div>
+          <Link href={`/friends/${friend.id}`} className="mt-4 inline-block text-sm text-primary">
+            View history →
+          </Link>
         </Card>
       ))}
     </div>

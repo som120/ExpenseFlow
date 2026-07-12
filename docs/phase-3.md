@@ -38,6 +38,8 @@
 - Transactions page now supports search/filter and basic shared/borrowed participant entry.
 - Transactions list now shows transaction dates.
 - Friends page supports date-range filtering for owed balances based on transaction dates.
+- Friend detail page now shows transaction history and allows settlement actions.
+- Transaction form now includes quick friend-picker chips and clears after successful create.
 - Advanced polish like command palette, dark/light switching, skeletons, and dialogs can be layered next.
 
 ## Verification notes

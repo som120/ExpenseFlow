@@ -40,6 +40,20 @@ export interface Friend {
   total_you_owe?: string;
 }
 
+export interface FriendTransactionHistoryItem {
+  transaction_id: string;
+  transaction_date: string;
+  description: string;
+  transaction_type: string;
+  share_amount: string;
+  pending_amount: string;
+  status: string;
+}
+
+export interface FriendDetail extends Friend {
+  history: FriendTransactionHistoryItem[];
+}
+
 export interface Budget {
   id: string;
   name: string;

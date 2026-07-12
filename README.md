@@ -42,6 +42,8 @@ The repository now also includes:
 - Transaction search/filter and participant input UI on the website
 - Transaction list date visibility on the website
 - Friend balance date-range filters on the website
+- Friend detail page with history and settlement actions
+- Transaction friend picker chips and auto-reset after create
 
 ## Phase 4 status
 

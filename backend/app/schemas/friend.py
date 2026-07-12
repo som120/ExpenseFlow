@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -30,3 +30,21 @@ class FriendRead(FriendBase):
     created_at: datetime
     total_owed_to_you: Decimal = Decimal("0.00")
     total_you_owe: Decimal = Decimal("0.00")
+
+
+class FriendTransactionHistoryItem(BaseModel):
+    transaction_id: uuid.UUID
+    transaction_date: date
+    description: str
+    transaction_type: str
+    share_amount: Decimal
+    pending_amount: Decimal
+    status: str
+
+
+class FriendDetailRead(FriendRead):
+    history: list[FriendTransactionHistoryItem]
+
+
+class FriendSettlementRequest(BaseModel):
+    transaction_id: uuid.UUID | None = None

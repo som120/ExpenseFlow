@@ -59,6 +59,21 @@ export function useCreateFriend() {
   });
 }
 
+export function useSettleFriend() {
+  const token = useAuthStore((state) => state.token);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ friendId, transactionId }: { friendId: string; transactionId?: string | null }) =>
+      api.settleFriend(token!, friendId, { transaction_id: transactionId ?? null }),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["friends"] });
+      queryClient.invalidateQueries({ queryKey: ["friend-history", token, variables.friendId] });
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["summary"] });
+    },
+  });
+}
+
 export function useDeleteBudget() {
   const token = useAuthStore((state) => state.token);
   const queryClient = useQueryClient();

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -24,17 +24,22 @@ export function TransactionForm({ selected, onDone }: { selected?: Transaction |
   const [paymentOwner, setPaymentOwner] = useState("self");
   const [transactionDate, setTransactionDate] = useState(today);
   const [participantNames, setParticipantNames] = useState("");
+  const friendOptions = useMemo(() => friends ?? [], [friends]);
+
+  const resetForm = () => {
+    setTransactionType("personal");
+    setDescription("");
+    setAmount("");
+    setMyShare("");
+    setCategoryName("Others");
+    setPaymentOwner("self");
+    setTransactionDate(today);
+    setParticipantNames("");
+  };
 
   useEffect(() => {
     if (!selected) {
-      setTransactionType("personal");
-      setDescription("");
-      setAmount("");
-      setMyShare("");
-      setCategoryName("Others");
-      setPaymentOwner("self");
-      setTransactionDate(today);
-      setParticipantNames("");
+      resetForm();
       return;
     }
 
@@ -84,7 +89,7 @@ export function TransactionForm({ selected, onDone }: { selected?: Transaction |
       return;
     }
 
-    createTransaction.mutate(payload, { onSuccess: () => onDone?.() });
+    createTransaction.mutate(payload, { onSuccess: () => { resetForm(); onDone?.(); } });
   };
 
   return (
@@ -134,6 +139,23 @@ export function TransactionForm({ selected, onDone }: { selected?: Transaction |
         {(transactionType === "shared" || transactionType === "borrowed") && (
           <div className="md:col-span-2">
             <Label>Participants</Label>
+            <div className="mb-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
+              {friendOptions.map((friend) => (
+                <button
+                  key={friend.id}
+                  type="button"
+                  className="rounded-full border px-2 py-1"
+                  onClick={() => {
+                    const current = participantNames.split(",").map((item) => item.trim()).filter(Boolean);
+                    if (!current.includes(friend.name)) {
+                      setParticipantNames([...current, friend.name].join(", "));
+                    }
+                  }}
+                >
+                  {friend.name}
+                </button>
+              ))}
+            </div>
             <Input
               value={participantNames}
               onChange={(e) => setParticipantNames(e.target.value)}

@@ -64,3 +64,13 @@ export function useReportsQuery() {
     enabled: hydrated && Boolean(token),
   });
 }
+
+export function useFriendHistoryQuery(friendId?: string, filters?: { fromDate?: string; toDate?: string }) {
+  const token = useAuthStore((state) => state.token);
+  const hydrated = useAuthStore((state) => state.hydrated);
+  return useQuery({
+    queryKey: ["friend-history", token, friendId, filters?.fromDate, filters?.toDate],
+    queryFn: () => api.friendHistory(token!, friendId!, { from_date: filters?.fromDate, to_date: filters?.toDate }),
+    enabled: hydrated && Boolean(token) && Boolean(friendId),
+  });
+}

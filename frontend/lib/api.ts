@@ -1,4 +1,4 @@
-import type { Analytics, AuthResponse, AuthUser, Budget, ExportFile, Friend, Report, Summary, TelegramAuthPayload, TelegramManualLink, Transaction } from "@/types";
+import type { Analytics, AuthResponse, AuthUser, Budget, ExportFile, Friend, FriendDetail, Report, Summary, TelegramAuthPayload, TelegramManualLink, Transaction } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v1";
 
@@ -60,6 +60,15 @@ export const api = {
     const suffix = search.toString() ? `?${search.toString()}` : "";
     return request<Friend[]>(`/friends${suffix}`, {}, token);
   },
+  friendHistory: (token: string, friendId: string, params?: { from_date?: string; to_date?: string }) => {
+    const search = new URLSearchParams();
+    if (params?.from_date) search.set("from_date", params.from_date);
+    if (params?.to_date) search.set("to_date", params.to_date);
+    const suffix = search.toString() ? `?${search.toString()}` : "";
+    return request<FriendDetail>(`/friends/${friendId}/history${suffix}`, {}, token);
+  },
+  settleFriend: (token: string, friendId: string, payload: { transaction_id?: string | null }) =>
+    request<FriendDetail>(`/friends/${friendId}/settlements`, { method: "POST", body: JSON.stringify(payload) }, token),
   createFriend: (token: string, payload: unknown) =>
     request<Friend>("/friends", { method: "POST", body: JSON.stringify(payload) }, token),
   budgets: (token: string) => request<Budget[]>("/budgets", {}, token),
