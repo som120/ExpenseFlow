@@ -8,6 +8,8 @@
 - Analytics service for trends, category breakdown, and friend balances
 - Frontend analytics page with charts
 - Frontend reports page with export actions
+- Multi-page PDF export support for long transaction tables
+- Transactions page view-limit selector (20/50/100)
 
 ## Backend APIs added
 

@@ -122,14 +122,24 @@ class ReportService:
         pdf.ln(6)
         pdf.set_font("Helvetica", style="B", size=13)
         pdf.cell(0, 8, "Transactions", new_x="LMARGIN", new_y="NEXT")
-        pdf.set_font("Helvetica", style="B", size=9)
-        pdf.set_fill_color(229, 231, 235)
         headers = [("Date", 24), ("Description", 64), ("Type", 24), ("Category", 28), ("Amount", 22), ("My Share", 24)]
-        for label, width in headers:
-            pdf.cell(width, 8, label, border=1, fill=True)
-        pdf.ln()
+
+        def draw_table_header() -> None:
+            pdf.set_font("Helvetica", style="B", size=9)
+            pdf.set_fill_color(229, 231, 235)
+            for label, width in headers:
+                pdf.cell(width, 8, label, border=1, fill=True)
+            pdf.ln()
+
+        draw_table_header()
         pdf.set_font("Helvetica", size=8)
-        for transaction in transactions[:40]:
+        for transaction in transactions:
+            if pdf.get_y() > 270:
+                pdf.add_page()
+                pdf.set_font("Helvetica", style="B", size=13)
+                pdf.cell(0, 8, "Transactions (continued)", new_x="LMARGIN", new_y="NEXT")
+                draw_table_header()
+                pdf.set_font("Helvetica", size=8)
             pdf.cell(24, 8, str(transaction.transaction_date), border=1)
             pdf.cell(64, 8, transaction.description[:34], border=1)
             pdf.cell(24, 8, transaction.transaction_type.value, border=1)

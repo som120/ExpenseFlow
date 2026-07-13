@@ -12,13 +12,14 @@ export default function TransactionsPage() {
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [limit, setLimit] = useState("20");
 
   const filteredTransactions = (data ?? []).filter((transaction) => {
     const matchesSearch = transaction.description.toLowerCase().includes(search.toLowerCase())
       || (transaction.category_name ?? "").toLowerCase().includes(search.toLowerCase());
     const matchesType = typeFilter === "all" || transaction.transaction_type === typeFilter;
     return matchesSearch && matchesType;
-  });
+  }).slice(0, Number(limit));
 
   return (
     <div className="space-y-6">
@@ -43,6 +44,18 @@ export default function TransactionsPage() {
           <option value="income">Income</option>
           <option value="shared">Shared</option>
           <option value="borrowed">Borrowed</option>
+        </select>
+      </div>
+      <div className="max-w-xs">
+        <label className="mb-2 block text-sm font-medium text-foreground">View transactions</label>
+        <select
+          value={limit}
+          onChange={(e) => setLimit(e.target.value)}
+          className="flex h-11 w-full rounded-xl border bg-card px-3 py-2 text-sm"
+        >
+          <option value="20">0-20</option>
+          <option value="50">0-50</option>
+          <option value="100">0-100</option>
         </select>
       </div>
       <TransactionForm selected={selectedTransaction} onDone={() => setSelectedTransaction(null)} />
