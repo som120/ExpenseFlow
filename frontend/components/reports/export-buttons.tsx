@@ -7,8 +7,20 @@ import { Card } from "@/components/ui/card";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth-store";
 
-function downloadTextFile(filename: string, content: string, mediaType: string) {
-  const blob = new Blob([content], { type: mediaType });
+function base64ToUint8Array(content: string) {
+  const binary = atob(content);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+  return bytes;
+}
+
+function downloadFile(filename: string, content: string, mediaType: string, encoding: string) {
+  const blob = new Blob(
+    [encoding === "base64" ? base64ToUint8Array(content) : content],
+    { type: mediaType },
+  );
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
@@ -23,21 +35,21 @@ export function ExportButtons() {
   const csvExport = useMutation({
     mutationFn: async () => {
       const file = await api.exportCsv(token!);
-      downloadTextFile(file.filename, file.content, file.media_type);
+      downloadFile(file.filename, file.content, file.media_type, file.encoding);
     },
   });
 
   const excelExport = useMutation({
     mutationFn: async () => {
       const file = await api.exportExcel(token!);
-      downloadTextFile(file.filename, file.content, file.media_type);
+      downloadFile(file.filename, file.content, file.media_type, file.encoding);
     },
   });
 
   const pdfExport = useMutation({
     mutationFn: async () => {
       const file = await api.exportPdf(token!);
-      downloadTextFile(file.filename, file.content, file.media_type);
+      downloadFile(file.filename, file.content, file.media_type, file.encoding);
     },
   });
 

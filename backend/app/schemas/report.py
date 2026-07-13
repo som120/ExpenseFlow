@@ -18,3 +18,4 @@ class ExportRead(BaseModel):
     filename: str
     content: str
     media_type: str
+    encoding: str = "utf-8"

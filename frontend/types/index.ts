@@ -139,6 +139,7 @@ export interface ExportFile {
   filename: string;
   content: string;
   media_type: string;
+  encoding: string;
 }
 
 export interface TelegramManualLink {
