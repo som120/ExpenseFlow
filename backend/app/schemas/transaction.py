@@ -41,6 +41,9 @@ class TransactionBase(BaseModel):
     def validate_share(self):
         if self.my_share > self.amount:
             raise ValueError("my_share cannot exceed amount")
+
+        if self.transaction_type == TransactionType.PERSONAL and self.my_share != self.amount:
+            raise ValueError("Personal expenses must use full amount as my_share")
         return self
 
 

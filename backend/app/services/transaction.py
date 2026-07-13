@@ -108,6 +108,9 @@ class TransactionService:
         if transaction.my_share > transaction.amount:
             raise ExpenseFlowException("my_share cannot exceed amount")
 
+        if transaction.transaction_type == TransactionType.PERSONAL and transaction.my_share != transaction.amount:
+            raise ExpenseFlowException("Personal expenses must use full amount as my_share")
+
         if transaction.transaction_type == TransactionType.INCOME and transaction.participants:
             raise ExpenseFlowException("Income transactions cannot have participants")
 

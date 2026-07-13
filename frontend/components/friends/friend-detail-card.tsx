@@ -6,11 +6,15 @@ import { useFriendHistoryQuery } from "@/hooks/use-dashboard-data";
 import { useSettleFriend } from "@/hooks/use-management";
 
 export function FriendDetailCard({ friendId, fromDate, toDate }: { friendId: string; fromDate?: string; toDate?: string }) {
-  const { data } = useFriendHistoryQuery(friendId, { fromDate, toDate });
+  const { data, isLoading } = useFriendHistoryQuery(friendId, { fromDate, toDate });
   const settleFriend = useSettleFriend();
 
+  if (isLoading) {
+    return <Card>Loading friend history...</Card>;
+  }
+
   if (!data) {
-    return null;
+    return <Card>No friend history found for this selection.</Card>;
   }
 
   return (

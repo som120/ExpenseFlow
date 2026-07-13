@@ -40,6 +40,8 @@
 - Friends page supports date-range filtering for owed balances based on transaction dates.
 - Friend detail page now shows transaction history and allows settlement actions.
 - Transaction form now includes quick friend-picker chips and clears after successful create.
+- Personal and income transactions now auto-lock `my_share` to the full amount.
+- Shared and borrowed transactions now support per-participant share entry from the web form.
 - Advanced polish like command palette, dark/light switching, skeletons, and dialogs can be layered next.
 
 ## Verification notes

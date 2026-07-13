@@ -24,6 +24,7 @@ export function TransactionForm({ selected, onDone }: { selected?: Transaction |
   const [paymentOwner, setPaymentOwner] = useState("self");
   const [transactionDate, setTransactionDate] = useState(today);
   const [participantNames, setParticipantNames] = useState("");
+  const [participantShareMap, setParticipantShareMap] = useState<Record<string, string>>({});
   const friendOptions = useMemo(() => friends ?? [], [friends]);
 
   const resetForm = () => {
@@ -51,7 +52,21 @@ export function TransactionForm({ selected, onDone }: { selected?: Transaction |
     setPaymentOwner(selected.payment_owner);
     setTransactionDate(selected.transaction_date);
     setParticipantNames(selected.participants.map((participant) => participant.participant_name).join(", "));
+    setParticipantShareMap(
+      Object.fromEntries(selected.participants.map((participant) => [participant.participant_name, participant.share_amount]))
+    );
   }, [selected]);
+
+  useEffect(() => {
+    if (transactionType === "personal") {
+      setMyShare(amount);
+      setPaymentOwner("self");
+    }
+
+    if (transactionType === "income") {
+      setMyShare(amount);
+    }
+  }, [transactionType, amount]);
 
   const mutation = selected ? updateTransaction : createTransaction;
 
@@ -60,22 +75,23 @@ export function TransactionForm({ selected, onDone }: { selected?: Transaction |
       .split(",")
       .map((item) => item.trim())
       .filter(Boolean);
-    const shareAmount = participantList.length > 0 ? (Number(amount) / (participantList.length + 1)).toFixed(2) : "0.00";
+    const equalShareAmount = participantList.length > 0 ? (Number(amount) / (participantList.length + 1)).toFixed(2) : "0.00";
 
     const payload = {
       transaction_type: transactionType,
       category_name: categoryName,
       amount,
-      my_share: myShare || amount,
+      my_share: transactionType === "personal" || transactionType === "income" ? amount : (myShare || amount),
       description,
       payment_owner: paymentOwner,
       transaction_date: transactionDate,
       participants:
         transactionType === "shared" || transactionType === "borrowed"
           ? participantList.map((name) => ({
+              friend_id: friendOptions.find((friend) => friend.name === name)?.id,
               participant_name: name,
-              share_amount: shareAmount,
-              pending_amount: shareAmount,
+              share_amount: participantShareMap[name] || equalShareAmount,
+              pending_amount: participantShareMap[name] || equalShareAmount,
               status: "pending",
             }))
           : [],
@@ -126,7 +142,12 @@ export function TransactionForm({ selected, onDone }: { selected?: Transaction |
         </div>
         <div>
           <Label>My Share</Label>
-          <Input value={myShare} onChange={(e) => setMyShare(e.target.value)} placeholder="250" />
+          <Input
+            value={myShare}
+            onChange={(e) => setMyShare(e.target.value)}
+            placeholder="250"
+            disabled={transactionType === "personal" || transactionType === "income"}
+          />
         </div>
         <div>
           <Label>Payment Owner</Label>
@@ -158,10 +179,32 @@ export function TransactionForm({ selected, onDone }: { selected?: Transaction |
             </div>
             <Input
               value={participantNames}
-              onChange={(e) => setParticipantNames(e.target.value)}
+              onChange={(e) => {
+                setParticipantNames(e.target.value);
+                const names = e.target.value.split(",").map((item) => item.trim()).filter(Boolean);
+                setParticipantShareMap((current) => {
+                  const next: Record<string, string> = {};
+                  for (const name of names) {
+                    next[name] = current[name] ?? "";
+                  }
+                  return next;
+                });
+              }}
               placeholder={friends?.length ? friends.map((friend) => friend.name).join(", ") : "Om, Rahul"}
             />
             <p className="mt-1 text-xs text-muted-foreground">Comma-separated names for equal split.</p>
+            <div className="mt-3 grid gap-3 md:grid-cols-2">
+              {participantNames.split(",").map((item) => item.trim()).filter(Boolean).map((name) => (
+                <div key={name}>
+                  <Label>{name} share</Label>
+                  <Input
+                    value={participantShareMap[name] ?? ""}
+                    onChange={(e) => setParticipantShareMap((current) => ({ ...current, [name]: e.target.value }))}
+                    placeholder="20"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
