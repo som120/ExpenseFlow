@@ -45,3 +45,11 @@ class CategoryRepository:
         if missing:
             self.db.add_all(missing)
             self.db.commit()
+
+    def list(self, user_id) -> list[Category]:
+        stmt = (
+            select(Category)
+            .where(or_(Category.user_id == user_id, Category.is_system.is_(True)))
+            .order_by(Category.name.asc())
+        )
+        return list(self.db.scalars(stmt).all())

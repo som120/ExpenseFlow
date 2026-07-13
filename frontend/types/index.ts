@@ -54,6 +54,13 @@ export interface FriendDetail extends Friend {
   history: FriendTransactionHistoryItem[];
 }
 
+export interface Category {
+  id: string;
+  name: string;
+  is_system: boolean;
+  created_at: string;
+}
+
 export interface Budget {
   id: string;
   name: string;

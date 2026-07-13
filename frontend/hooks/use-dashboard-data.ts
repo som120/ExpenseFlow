@@ -74,3 +74,13 @@ export function useFriendHistoryQuery(friendId?: string, filters?: { fromDate?: 
     enabled: hydrated && Boolean(token) && Boolean(friendId),
   });
 }
+
+export function useCategoriesQuery() {
+  const token = useAuthStore((state) => state.token);
+  const hydrated = useAuthStore((state) => state.hydrated);
+  return useQuery({
+    queryKey: ["categories", token],
+    queryFn: () => api.categories(token!),
+    enabled: hydrated && Boolean(token),
+  });
+}

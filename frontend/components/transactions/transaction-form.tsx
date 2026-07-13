@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useCategoriesQuery } from "@/hooks/use-dashboard-data";
 import { useFriendsQuery } from "@/hooks/use-dashboard-data";
 import { useCreateTransaction, useUpdateTransaction } from "@/hooks/use-management";
 import type { Transaction } from "@/types";
@@ -16,6 +17,7 @@ export function TransactionForm({ selected, onDone }: { selected?: Transaction |
   const createTransaction = useCreateTransaction();
   const updateTransaction = useUpdateTransaction();
   const { data: friends } = useFriendsQuery();
+  const { data: categories } = useCategoriesQuery();
   const [transactionType, setTransactionType] = useState("personal");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
@@ -130,7 +132,15 @@ export function TransactionForm({ selected, onDone }: { selected?: Transaction |
         </div>
         <div>
           <Label>Category</Label>
-          <Input value={categoryName} onChange={(e) => setCategoryName(e.target.value)} placeholder="Food" />
+          <select
+            value={categoryName}
+            onChange={(e) => setCategoryName(e.target.value)}
+            className="flex h-11 w-full rounded-xl border bg-card px-3 py-2 text-sm"
+          >
+            {(categories ?? []).map((category) => (
+              <option key={category.id} value={category.name}>{category.name}</option>
+            ))}
+          </select>
         </div>
         <div>
           <Label>Description</Label>

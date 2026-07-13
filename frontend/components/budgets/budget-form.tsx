@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useCategoriesQuery } from "@/hooks/use-dashboard-data";
 import { useCreateBudget } from "@/hooks/use-management";
 
 export function BudgetForm() {
   const createBudget = useCreateBudget();
+  const { data: categories } = useCategoriesQuery();
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
   const [categoryName, setCategoryName] = useState("Others");
@@ -32,7 +34,15 @@ export function BudgetForm() {
         </div>
         <div>
           <Label>Category</Label>
-          <Input value={categoryName} onChange={(e) => setCategoryName(e.target.value)} placeholder="Food" />
+          <select
+            value={categoryName}
+            onChange={(e) => setCategoryName(e.target.value)}
+            className="flex h-11 w-full rounded-xl border bg-card px-3 py-2 text-sm"
+          >
+            {(categories ?? []).map((category) => (
+              <option key={category.id} value={category.name}>{category.name}</option>
+            ))}
+          </select>
         </div>
         <div>
           <Label>Period</Label>

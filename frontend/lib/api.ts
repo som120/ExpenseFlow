@@ -1,4 +1,4 @@
-import type { Analytics, AuthResponse, AuthUser, Budget, ExportFile, Friend, FriendDetail, Report, Summary, TelegramAuthPayload, TelegramManualLink, Transaction } from "@/types";
+import type { Analytics, AuthResponse, AuthUser, Budget, Category, ExportFile, Friend, FriendDetail, Report, Summary, TelegramAuthPayload, TelegramManualLink, Transaction } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v1";
 
@@ -40,6 +40,7 @@ export const api = {
   generateTelegramLinkCode: (token: string) =>
     request<TelegramManualLink>("/auth/telegram/link-code", { method: "POST" }, token),
   me: (token: string) => request<AuthUser>("/auth/me", {}, token),
+  categories: (token: string) => request<Category[]>("/categories", {}, token),
   summary: (token: string) => request<Summary>("/summary", {}, token),
   analytics: (token: string) => request<Analytics>("/analytics", {}, token),
   reports: (token: string) => request<Report>("/reports", {}, token),
