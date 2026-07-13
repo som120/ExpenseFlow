@@ -46,6 +46,8 @@ export default function TransactionsPage() {
           <option value="borrowed">Borrowed</option>
         </select>
       </div>
+      <TransactionForm selected={selectedTransaction} onDone={() => setSelectedTransaction(null)} />
+      <TransactionTable transactions={filteredTransactions} onEdit={(transaction) => setSelectedTransaction(transaction)} />
       <div className="max-w-xs">
         <label className="mb-2 block text-sm font-medium text-foreground">View transactions</label>
         <select
@@ -58,8 +60,6 @@ export default function TransactionsPage() {
           <option value="100">0-100</option>
         </select>
       </div>
-      <TransactionForm selected={selectedTransaction} onDone={() => setSelectedTransaction(null)} />
-      <TransactionTable transactions={filteredTransactions} onEdit={(transaction) => setSelectedTransaction(transaction)} />
     </div>
   );
 }
