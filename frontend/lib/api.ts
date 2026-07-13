@@ -1,4 +1,4 @@
-import type { Analytics, AuthResponse, AuthUser, Budget, Category, ExportFile, Friend, FriendDetail, Report, Summary, TelegramAuthPayload, TelegramManualLink, Transaction } from "@/types";
+import type { Analytics, AuthResponse, AuthUser, Budget, Category, ExportFile, Friend, FriendDetail, OCRResult, Report, Summary, TelegramAuthPayload, TelegramManualLink, Transaction } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v1";
 
@@ -25,6 +25,24 @@ async function request<T>(path: string, options: RequestInit = {}, token?: strin
   return response.json() as Promise<T>;
 }
 
+async function requestFormData<T>(path: string, formData: FormData, token?: string): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    body: formData,
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: "Request failed" }));
+    throw new Error(error.detail ?? "Request failed");
+  }
+
+  return response.json() as Promise<T>;
+}
+
 export const api = {
   register: (payload: { email: string; full_name: string; password: string }) =>
     request<AuthUser>("/auth/register", { method: "POST", body: JSON.stringify(payload) }),
@@ -41,6 +59,11 @@ export const api = {
     request<TelegramManualLink>("/auth/telegram/link-code", { method: "POST" }, token),
   me: (token: string) => request<AuthUser>("/auth/me", {}, token),
   categories: (token: string) => request<Category[]>("/categories", {}, token),
+  uploadReceipt: (token: string, file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return requestFormData<OCRResult>("/ocr/receipt", formData, token);
+  },
   summary: (token: string) => request<Summary>("/summary", {}, token),
   analytics: (token: string) => request<Analytics>("/analytics", {}, token),
   reports: (token: string) => request<Report>("/reports", {}, token),

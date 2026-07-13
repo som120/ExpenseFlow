@@ -147,3 +147,9 @@ export interface TelegramManualLink {
   expires_at: string;
   instructions: string;
 }
+
+export interface OCRResult {
+  extracted_text: string;
+  message: string;
+  parsed?: Record<string, unknown> | null;
+}

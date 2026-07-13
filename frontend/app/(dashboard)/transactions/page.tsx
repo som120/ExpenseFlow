@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { ReceiptUploadCard } from "@/components/transactions/receipt-upload-card";
 import { TransactionForm } from "@/components/transactions/transaction-form";
 import { TransactionTable } from "@/components/transactions/transaction-table";
 import { useTransactionsQuery } from "@/hooks/use-dashboard-data";
@@ -47,6 +48,7 @@ export default function TransactionsPage() {
         </select>
       </div>
       <TransactionForm selected={selectedTransaction} onDone={() => setSelectedTransaction(null)} />
+      <ReceiptUploadCard />
       <TransactionTable transactions={filteredTransactions} onEdit={(transaction) => setSelectedTransaction(transaction)} />
       <div className="max-w-xs">
         <label className="mb-2 block text-sm font-medium text-foreground">View transactions</label>

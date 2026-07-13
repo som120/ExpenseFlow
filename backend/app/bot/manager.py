@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from io import BytesIO
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
@@ -59,6 +60,20 @@ class TelegramBotManager:
             await bot.send_message(chat_id=chat_id, text=text)
         except Exception:
             logger.exception("Failed to send Telegram message", extra={"chat_id": chat_id})
+
+    async def get_file_bytes(self, file_id: str) -> bytes | None:
+        bot = self.get_bot()
+        if not bot:
+            return None
+
+        try:
+            telegram_file = await bot.get_file(file_id)
+            buffer = BytesIO()
+            await bot.download_file(telegram_file.file_path, destination=buffer)
+            return buffer.getvalue()
+        except Exception:
+            logger.exception("Failed to download Telegram file", extra={"file_id": file_id})
+            return None
 
     async def shutdown(self) -> None:
         if self._bot is not None:

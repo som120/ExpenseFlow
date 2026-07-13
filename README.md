@@ -44,6 +44,7 @@ The repository now also includes:
 - Friend balance date-range filters on the website
 - Friend detail page with history and settlement actions
 - Transaction friend picker chips and auto-reset after create
+- Receipt OCR upload flow for website and Telegram
 
 ## Phase 4 status
 

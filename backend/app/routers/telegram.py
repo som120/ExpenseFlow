@@ -14,6 +14,7 @@ from app.services.bot_message import BotMessageService
 from app.services.bot_transaction import BotTransactionService
 from app.services.bot_user import BotUserService
 from app.services.friend import FriendService
+from app.services.ocr import OCRService
 from app.services.report import ReportService
 from app.services.summary import SummaryService
 
@@ -35,7 +36,7 @@ async def telegram_webhook(
         raise ExpenseFlowException("Invalid webhook secret", status.HTTP_401_UNAUTHORIZED)
 
     message = payload.message or payload.edited_message
-    if not message or not message.text:
+    if not message:
         return BotResponse(message="Ignored unsupported Telegram update type.")
 
     if not message.from_user:
@@ -57,7 +58,24 @@ async def telegram_webhook(
         friend_service=FriendService(db),
     )
     try:
-        if message.text.startswith("/link "):
+        if message.photo:
+            largest_photo = message.photo[-1]
+            file_bytes = await telegram_bot_manager.get_file_bytes(largest_photo.file_id)
+            if not file_bytes:
+                response = BotResponse(message="Could not download receipt image from Telegram.")
+            else:
+                ocr_service = OCRService()
+                extracted_text = ocr_service.extract_text(file_bytes)
+                parsed = ocr_service.parse_receipt(extracted_text)
+                if not parsed:
+                    response = BotResponse(message="Receipt text extracted, but no transaction could be inferred.")
+                else:
+                    BotTransactionService(db).create_transaction_from_parsed(parsed, telegram_user.id)
+                    response = BotResponse(
+                        message=f"Receipt processed and transaction saved. {BotTransactionService(db)._build_preview(parsed)}",
+                        parsed=parsed.model_dump(mode="json"),
+                    )
+        elif message.text and message.text.startswith("/link "):
             response = handle_link_command(
                 message.text,
                 bot_user_service,
@@ -65,10 +83,10 @@ async def telegram_webhook(
                 message.from_user.full_name,
                 message.from_user.username,
             )
-        elif message.text.startswith("/"):
+        elif message.text and message.text.startswith("/"):
             response = handle_command(message.text, message_service)
         else:
-            response = BotTransactionService(db).create_transaction_from_message(message.text, telegram_user)
+            response = BotTransactionService(db).create_transaction_from_message(message.text or "", telegram_user)
     except ExpenseFlowException as exc:
         response = BotResponse(message=exc.detail)
     except Exception as exc:
